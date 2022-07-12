@@ -1,7 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Pressable,
+  TouchableHighlight,
+} from 'react-native';
 import TaskModel from '../../models/Task';
-
+import TaskInfo from './TaskInfo';
 interface TaskProps {
   task: TaskModel;
   tasks: Array<TaskModel>;
@@ -10,6 +17,7 @@ interface TaskProps {
 
 export default function Task({ task, tasks, setTasks }: TaskProps) {
   const [favorite, setFavorite] = React.useState(false);
+  const [showTask, setShowTask] = React.useState(false);
 
   const toggleFavorite = () => {
     setFavorite(!favorite);
@@ -22,18 +30,24 @@ export default function Task({ task, tasks, setTasks }: TaskProps) {
       setTasks([...tasks]);
     }
   };
+
+  const toggleModal = () => {
+    console.log('task modl');
+    setShowTask(!showTask);
+  };
   return (
-    <View style={styles.container}>
+    <Pressable onPress={toggleModal} style={styles.container}>
       <View style={styles.items}>
-        <View>
-          <Text style={styles.text}>{task?.title || 'Task Name'}</Text>
-        </View>
+        <Text style={styles.text}>{task?.title || 'Task Name'}</Text>
         <View style={styles.itemsRight}>
-          <Button onPress={toggleFavorite} title="Fav" color="green" />
-          <Button onPress={deleteTask} title="Dlt" color="red" />
+          <TouchableHighlight onPress={toggleFavorite}>
+            <Text>Fav</Text>
+          </TouchableHighlight>
+          <Button onPress={deleteTask} title="Delete" color="red" />
         </View>
       </View>
-    </View>
+      <TaskInfo task={task} showTask={showTask} setShowTask={setShowTask} />
+    </Pressable>
   );
 }
 
@@ -42,9 +56,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#f2f2f2',
     fontSize: 12,
     padding: 20,
-    margin: 10,
+    marginHorizontal: 20,
+    marginVertical: 7,
     borderRadius: 10,
-    // flexWrap: 'wrap',
   },
   items: {
     flexDirection: 'row',
@@ -58,5 +72,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '30%',
+    marginRight: 15,
   },
 });
