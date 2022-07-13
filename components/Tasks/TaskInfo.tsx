@@ -12,20 +12,31 @@ interface TaskInfoProps {
   task: TaskModel;
   showTask: boolean;
   setShowTask: React.Dispatch<React.SetStateAction<boolean>>;
+  navigation: any;
 }
 
 export default function TaskInfo({
   task,
   showTask,
   setShowTask,
+  navigation,
 }: TaskInfoProps) {
   const [status, setStatus] = React.useState(task.status);
+  const [title, setTitle] = React.useState(task.title);
+  const [description, setDescription] = React.useState(task.description);
+  const [priority, setPriority] = React.useState(task.priority);
   const updateStatus = () => {
     if (status === 0) {
       task.status = 1;
       setStatus(1);
     }
   };
+
+  //   const updateTask = () => {
+  //     task.title = title;
+  //     task.description = description;
+  //     task.priority = priority;
+  //   }
 
   const getPriority = () => {
     switch (task.priority) {
@@ -39,6 +50,7 @@ export default function TaskInfo({
         return 'Low';
     }
   };
+
   return (
     <Modal
       visible={showTask}
@@ -60,7 +72,7 @@ export default function TaskInfo({
           <View style={styles.taskInfoContainer}>
             <View style={styles.top}>
               <Text style={{ marginBottom: 4 }}>
-                Created on: {task?.createdAt.toDateString()}
+                Created on: {task?.createdAt}
               </Text>
               <Text style={[status === 0 ? styles.pending : styles.done]}>
                 {status === 0 ? 'Pending' : 'Done'}
@@ -77,7 +89,11 @@ export default function TaskInfo({
         <TouchableHighlight onPress={() => updateStatus()}>
           <Text>Done</Text>
         </TouchableHighlight>
-        <TouchableHighlight>
+        <TouchableHighlight
+          onPress={() => {
+            setShowTask(false);
+            navigation.navigate('Details', { task });
+          }}>
           <Text>Edit Task</Text>
         </TouchableHighlight>
         <TouchableHighlight>
@@ -142,7 +158,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
-    marginBottom: 30,
+    marginBottom: 40,
   },
   done: {
     color: 'green',

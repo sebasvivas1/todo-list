@@ -13,9 +13,10 @@ interface TaskProps {
   task: TaskModel;
   tasks: Array<TaskModel>;
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  navigation: any;
 }
 
-export default function Task({ task, tasks, setTasks }: TaskProps) {
+export default function Task({ task, tasks, setTasks, navigation }: TaskProps) {
   const [favorite, setFavorite] = React.useState(false);
   const [showTask, setShowTask] = React.useState(false);
 
@@ -46,7 +47,12 @@ export default function Task({ task, tasks, setTasks }: TaskProps) {
           <Button onPress={deleteTask} title="Delete" color="red" />
         </View>
       </View>
-      <TaskInfo task={task} showTask={showTask} setShowTask={setShowTask} />
+      <TaskInfo
+        task={task}
+        showTask={showTask}
+        setShowTask={setShowTask}
+        navigation={navigation}
+      />
     </Pressable>
   );
 }

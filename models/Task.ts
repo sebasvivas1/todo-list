@@ -5,5 +5,5 @@ export default interface TaskModel {
   status: number;
   favorite: boolean;
   priority: number;
-  createdAt: Date;
+  createdAt: string;
 }
