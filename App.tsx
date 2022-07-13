@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from './screens/HomeScreen';
 import FavoritesScreen from './screens/FavoritesScreen';
 import DetailsScreen from './screens/DetailsScreen';
+import NewTaskScreen from './screens/NewTaskScreen';
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Favorites" component={FavoritesScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="New Task" component={NewTaskScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

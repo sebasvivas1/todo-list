@@ -3,7 +3,7 @@ import Favorites from '../components/Tasks/Favorites';
 import TaskModel from '../models/Task';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function FavoritesScreen({ navigation }) {
+export default function FavoritesScreen({ navigation }: any) {
   const [favoriteTasks, setFavoriteTasks] = React.useState<Array<TaskModel>>(
     [],
   );
@@ -31,6 +31,7 @@ export default function FavoritesScreen({ navigation }) {
       favorites={favoriteTasks}
       allTasks={allTasks}
       setAllTasks={setAllTasks}
+      navigation={navigation}
     />
   );
 }
