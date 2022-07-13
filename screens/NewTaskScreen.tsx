@@ -4,7 +4,7 @@ import NewTask from '../components/Tasks/NewTask';
 import TaskModel from '../models/Task';
 
 export default function NewTaskScreen({ navigation }: any) {
-  const [tasks, setTasks] = React.useState<Array<TaskModel>>([]);
+  const [tasks, setTasks] = React.useState<Array<TaskModel>>();
   const getData = async () => {
     try {
       const storedTasks = await AsyncStorage.getItem('@storage_Key');
@@ -20,5 +20,7 @@ export default function NewTaskScreen({ navigation }: any) {
     getData();
   }, []);
 
-  return <NewTask navigation={navigation} tasks={tasks} setTasks={setTasks} />;
+  return (
+    <NewTask navigation={navigation} tasks={tasks || []} setTasks={setTasks} />
+  );
 }

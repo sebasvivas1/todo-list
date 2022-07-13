@@ -45,7 +45,7 @@ export default function Home({ navigation }: HomeProps) {
       const storedTasks = await AsyncStorage.getItem('@storage_Key');
       if (storedTasks !== null) {
         setTasks(JSON.parse(storedTasks));
-        // console.log(storedTasks);
+        console.log(storedTasks);
       }
     } catch (err) {
       console.log(err);

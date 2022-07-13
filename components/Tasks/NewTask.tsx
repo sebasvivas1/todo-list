@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import RNPickerSelect from 'react-native-picker-select'
+import RNPickerSelect from 'react-native-picker-select';
 import TaskModel from '../../models/Task';
 import { faker } from '@faker-js/faker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,13 +34,13 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
           description: taskDescription,
           priority: taskPriority,
           status: 0,
-          favorite: true,
+          favorite: false,
           createdAt: new Date(),
         };
         setTasks([...tasks, task]);
+        console.log('setTask: ', task);
         setTaskName('');
         setTaskDescription('');
-        navigation.navigate('Home');
       } catch (err) {
         console.log(err);
       }
@@ -50,10 +50,13 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
   };
 
   const saveData = async (tasksArr: TaskModel[]) => {
+    console.log('Called saveData');
     try {
       const jsonValue = JSON.stringify(tasksArr);
-      await AsyncStorage.setItem('@storage_Key', jsonValue);
+      const res = await AsyncStorage.setItem('@storage_Key', jsonValue);
       console.log('Saved:', jsonValue);
+      console.log('response: ', res);
+      // navigation.navigate('Home');
     } catch (err) {
       console.log(err);
     }
@@ -77,12 +80,12 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
           onChange={e => setTaskDescription(e.nativeEvent.text)}
         />
         <Text>Task Priority</Text>
-        <RNPickerSelect onValueChange={(value) => setTaskPriority(value)}
+        <RNPickerSelect
+          onValueChange={value => setTaskPriority(value)}
           items={[
-            { label: 'Low Priority', value: 0},
-            { label: 'High Priority', value: 1},
-            { label: 'Critical Priority', value: 2},
-
+            { label: 'Low Priority', value: 0 },
+            { label: 'High Priority', value: 1 },
+            { label: 'Critical Priority', value: 2 },
           ]}
         />
         <Button title="Create Task!" onPress={addTask} />
