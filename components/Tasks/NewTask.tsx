@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React from 'react';
+import RNPickerSelect from 'react-native-picker-select'
 import TaskModel from '../../models/Task';
 import { faker } from '@faker-js/faker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -74,6 +75,15 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
           style={styles.input}
           placeholder="Task Description"
           onChange={e => setTaskDescription(e.nativeEvent.text)}
+        />
+        <Text>Task Priority</Text>
+        <RNPickerSelect onValueChange={(value) => setTaskPriority(value)}
+          items={[
+            { label: 'Low Priority', value: 0},
+            { label: 'High Priority', value: 1},
+            { label: 'Critical Priority', value: 2},
+
+          ]}
         />
         <Button title="Create Task!" onPress={addTask} />
       </ScrollView>
