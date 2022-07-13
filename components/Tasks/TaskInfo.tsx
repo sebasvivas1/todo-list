@@ -7,12 +7,15 @@ import {
 } from 'react-native';
 import React from 'react';
 import TaskModel from '../../models/Task';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface TaskInfoProps {
   task: TaskModel;
   showTask: boolean;
   setShowTask: React.Dispatch<React.SetStateAction<boolean>>;
   navigation: any;
+  tasks: Array<TaskModel>;
+  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
 }
 
 export default function TaskInfo({
@@ -20,6 +23,8 @@ export default function TaskInfo({
   showTask,
   setShowTask,
   navigation,
+  tasks,
+  setTasks,
 }: TaskInfoProps) {
   const [status, setStatus] = React.useState(task.status);
   const [title, setTitle] = React.useState(task.title);
@@ -29,8 +34,23 @@ export default function TaskInfo({
     if (status === 0) {
       task.status = 1;
       setStatus(1);
+      const index = tasks.findIndex(t => t.id === task.id);
+      if (index > -1) {
+        tasks[index] = task;
+        setTasks([...tasks]);
+        setShowTask(false);
+      }
     }
   };
+
+  const saveStatus = async (tasksArr: TaskModel[]) => {
+    const jsonValue = JSON.stringify(tasksArr);
+    await AsyncStorage.setItem('@storage_Key', jsonValue);
+  };
+
+  React.useEffect(() => {
+    saveStatus(tasks);
+  }, [tasks]);
 
   //   const updateTask = () => {
   //     task.title = title;
@@ -49,6 +69,11 @@ export default function TaskInfo({
       default:
         return 'Low';
     }
+  };
+
+  const formatDate = () => {
+    const date = new Date(task.createdAt);
+    return date.toDateString();
   };
 
   return (
@@ -72,7 +97,7 @@ export default function TaskInfo({
           <View style={styles.taskInfoContainer}>
             <View style={styles.top}>
               <Text style={{ marginBottom: 4 }}>
-                Created on: {task?.createdAt}
+                Created on: {formatDate() || 'Date'}
               </Text>
               <Text style={[status === 0 ? styles.pending : styles.done]}>
                 {status === 0 ? 'Pending' : 'Done'}

@@ -11,69 +11,76 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import Task from '../Tasks/Task';
 import Footer from '../common/Footer';
 import NewTask from '../Tasks/NewTask';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import global from '../../styles/global';
 
 interface HomeProps {
   navigation: any;
 }
 
 export default function Home({ navigation }: HomeProps) {
-  const [tasks, setTasks] = React.useState<Array<TaskModel>>([
-    {
-      id: 'asdk81273981237',
-      title: 'First Task',
-      description:
-        'Lorem ipsum dolor, sit amet consectetur adipisicing elit. Saepe repudiandae, aspernatur tempora eveniet, iusto perferendis, qui neque laboriosam exercitationem natus recusandae soluta! Quod, aut nesciunt! Similique cumque dicta iure magnam rem. Esse, incidunt nesciunt laudantium soluta rerum commodi porro optio ratione voluptas amet iure expedita enim quod cupiditate id distinctio? Et soluta dolore dignissimos rerum fugiat animi reiciendis consequatur doloribus deleniti, sit debitis amet illo quo ullam natus est repellat?',
-      priority: 0,
-      status: 0,
-      favorite: false,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'asdk81difdfkldf',
-      title: 'Second Task',
-      description: 'Task Description',
-      priority: 1,
-      status: 0,
-      favorite: false,
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'asdk81difdfkldfklasjdkflj',
-      title: 'Third Critical Task',
-      description: 'Task Description',
-      priority: 2,
-      status: 0,
-      favorite: false,
-      createdAt: new Date().toISOString(),
-    },
-  ]);
   const [showModal, setShowModal] = React.useState(false);
+  const [tasks, setTasks] = React.useState<Array<TaskModel>>([]);
+
   const toggleFavorite = (task: TaskModel) => {
-    const index = tasks.findIndex(t => t.id === task.id);
-    if (index > -1) {
-      tasks[index].favorite = !tasks[index].favorite;
-      setTasks([...tasks]);
-      console.log(task);
+    if (tasks !== undefined) {
+      const index = tasks.findIndex(t => t.id === task.id);
+      if (index > -1) {
+        tasks[index].favorite = !tasks[index].favorite;
+        setTasks([...tasks]);
+        updateTask();
+      }
     }
   };
   const deleteTask = (task: TaskModel) => {
-    const index = tasks.findIndex(t => t.id === task.id);
-    if (index > -1) {
-      tasks.splice(index, 1);
-      setTasks([...tasks]);
+    if (tasks !== undefined) {
+      const index = tasks.findIndex(t => t.id === task.id);
+      if (index > -1) {
+        tasks.splice(index, 1);
+        setTasks([...tasks]);
+        updateTask();
+      }
     }
   };
 
+  const updateTask = async () => {
+    if (tasks !== undefined) {
+      await AsyncStorage.setItem('@storage_Key', JSON.stringify(tasks));
+    }
+  };
+  const getData = async () => {
+    try {
+      const storedTasks = await AsyncStorage.getItem('@storage_Key');
+      if (storedTasks !== null) {
+        setTasks(JSON.parse(storedTasks));
+        // console.log(storedTasks);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  React.useEffect(() => {
+    getData();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Active Tasks</Text>
+    <View style={global.container}>
+      <View style={global.header}>
+        <Text style={global.title}>Active Tasks</Text>
+        <TouchableHighlight
+          onPress={() => navigation.navigate('Favorites')}
+          underlayColor={'#fff'}>
+          <Text style={styles.favoriteTitle}>Favorites</Text>
+        </TouchableHighlight>
+      </View>
       <SwipeListView
         data={tasks}
         renderItem={data => (
           <View>
             <Task
               task={data.item}
-              tasks={tasks}
+              tasks={tasks || []}
               setTasks={setTasks}
               navigation={navigation}
             />
@@ -103,7 +110,7 @@ export default function Home({ navigation }: HomeProps) {
       <NewTask
         setShowModal={setShowModal}
         showModal={showModal}
-        tasks={tasks}
+        tasks={tasks || []}
         setTasks={setTasks}
       />
     </View>
@@ -111,16 +118,12 @@ export default function Home({ navigation }: HomeProps) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  title: {
+  favoriteTitle: {
     paddingTop: 20,
     paddingBottom: 10,
     paddingHorizontal: 20,
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 15,
+    color: 'red',
   },
   tasksWrapper: {
     padding: 20,

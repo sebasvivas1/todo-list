@@ -1,13 +1,22 @@
-import { View, Text, Modal, TextInput, StyleSheet, Button } from 'react-native';
+import {
+  View,
+  Text,
+  Modal,
+  TextInput,
+  StyleSheet,
+  Button,
+  Alert,
+} from 'react-native';
 import React from 'react';
 import TaskModel from '../../models/Task';
 import { faker } from '@faker-js/faker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface NewTaskProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
   tasks: Array<TaskModel>;
-  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  setTasks: any;
 }
 
 export default function NewTask({
@@ -21,26 +30,46 @@ export default function NewTask({
   const [taskPriority, setTaskPriority] = React.useState<number>(0);
   const [taskStatus, setTaskStatus] = React.useState<number>(0);
   const addTask = () => {
-    const task: TaskModel = {
-      id: faker.database.mongodbObjectId(),
-      title: taskName,
-      description: taskDescription,
-      priority: taskPriority,
-      status: taskStatus,
-      favorite: false,
-      createdAt: new Date(),
-    };
-    setTasks([...tasks, task]);
-    setTaskName('');
-    setTaskDescription('');
-    setTaskPriority(0);
-    setTaskStatus(0);
-    setShowModal(false);
+    if (taskName.length > 0 && taskDescription.length > 0) {
+      try {
+        const task: TaskModel = {
+          id: faker.database.mongodbObjectId(),
+          title: taskName,
+          description: taskDescription,
+          priority: 0,
+          status: 0,
+          favorite: true,
+          createdAt: new Date(),
+        };
+        setTasks([...tasks, task]);
+        setShowModal(false);
+        setTaskName('');
+        setTaskDescription('');
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      Alert.alert('Error', 'Please fill out all fields');
+    }
   };
+
+  const saveData = async (tasksArr: TaskModel[]) => {
+    try {
+      const jsonValue = JSON.stringify(tasksArr);
+      await AsyncStorage.setItem('@storage_Key', jsonValue);
+      console.log('Saved:', jsonValue);
+      // console.log(jsonValue);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  React.useEffect(() => {
+    saveData(tasks);
+  }, [tasks]);
   return (
     <Modal
       visible={showModal}
-      //   transparent
       onRequestClose={() => setShowModal(!showModal)}
       animationType="fade">
       <View style={styles.centeredView}>

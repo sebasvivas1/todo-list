@@ -13,7 +13,7 @@ interface TaskProps {
   task: TaskModel;
   tasks: Array<TaskModel>;
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-  navigation: any;
+  navigation?: any;
 }
 
 export default function Task({ task, tasks, setTasks, navigation }: TaskProps) {
@@ -33,7 +33,6 @@ export default function Task({ task, tasks, setTasks, navigation }: TaskProps) {
   };
 
   const toggleModal = () => {
-    console.log('task modl');
     setShowTask(!showTask);
   };
   return (
@@ -50,6 +49,8 @@ export default function Task({ task, tasks, setTasks, navigation }: TaskProps) {
       <TaskInfo
         task={task}
         showTask={showTask}
+        tasks={tasks}
+        setTasks={setTasks}
         setShowTask={setShowTask}
         navigation={navigation}
       />
