@@ -32,6 +32,7 @@ export default function FavoritesScreen({ navigation }: any) {
   return (
     <Favorites
       favorites={favoriteTasks}
+      setFavorites={setFavoriteTasks}
       allTasks={allTasks}
       setAllTasks={setAllTasks}
       navigation={navigation}

@@ -17,4 +17,7 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  blue: {
+    color: '#558DED',
+  },
 });

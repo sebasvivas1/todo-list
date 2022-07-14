@@ -1,10 +1,12 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View } from 'react-native';
 import React from 'react';
-import Home from '../components/Landing/Home';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskModel from '../models/Task';
 
-export default function HomeScreen({ navigation }: any) {
+export const TasksContext = React.createContext<any>([]);
+export default function ContextProvider({ children }: any) {
   const [tasks, setTasks] = React.useState<Array<TaskModel>>([]);
+
   const getData = async () => {
     try {
       const storedTasks = await AsyncStorage.getItem('@storage_Key');
@@ -17,10 +19,13 @@ export default function HomeScreen({ navigation }: any) {
   };
 
   React.useEffect(() => {
-    navigation.addListener('focus', () => {
-      getData();
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    getData();
   }, []);
-  return <Home navigation={navigation} tasks={tasks} setTasks={setTasks} />;
+  return (
+    <View>
+      <TasksContext.Provider value={{ tasks, setTasks }}>
+        {children}
+      </TasksContext.Provider>
+    </View>
+  );
 }

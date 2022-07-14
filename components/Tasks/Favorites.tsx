@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
 import TaskModel from '../../models/Task';
 import Task from './Task';
@@ -8,6 +8,7 @@ import Footer from '../common/Footer';
 
 interface FavoritesProps {
   favorites: Array<TaskModel>;
+  setFavorites: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
   allTasks: Array<TaskModel>;
   setAllTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
   navigation: any;
@@ -15,11 +16,9 @@ interface FavoritesProps {
 
 export default function Favorites({
   favorites,
-  allTasks,
-  setAllTasks,
+  setFavorites,
   navigation,
 }: FavoritesProps) {
-  const [showModal, setShowModal] = React.useState(false);
   return (
     <View style={global.container}>
       <Text style={global.title}>Favorite Tasks</Text>
@@ -29,7 +28,12 @@ export default function Favorites({
             <View>
               {favorites.map((task: TaskModel) => (
                 <View key={task?.id}>
-                  <Task task={task} tasks={allTasks} setTasks={setAllTasks} />
+                  <Task
+                    task={task}
+                    tasks={favorites}
+                    setTasks={setFavorites}
+                    navigation={navigation}
+                  />
                 </View>
               ))}
             </View>
@@ -38,11 +42,7 @@ export default function Favorites({
           )}
         </View>
       </ScrollView>
-      <Footer
-        showModal={showModal}
-        setShowModal={setShowModal}
-        navigation={navigation}
-      />
+      <Footer navigation={navigation} />
     </View>
   );
 }

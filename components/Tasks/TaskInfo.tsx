@@ -8,6 +8,7 @@ import {
 import React from 'react';
 import TaskModel from '../../models/Task';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import TaskInfoFooter from './TaskInfoFooter';
 
 interface TaskInfoProps {
   task: TaskModel;
@@ -26,22 +27,7 @@ export default function TaskInfo({
   tasks,
   setTasks,
 }: TaskInfoProps) {
-  const [status, setStatus] = React.useState(task.status);
-  const [title, setTitle] = React.useState(task.title);
-  const [description, setDescription] = React.useState(task.description);
-  const [priority, setPriority] = React.useState(task.priority);
-  const updateStatus = () => {
-    if (status === 0) {
-      task.status = 1;
-      setStatus(1);
-      const index = tasks.findIndex(t => t.id === task.id);
-      if (index > -1) {
-        tasks[index] = task;
-        setTasks([...tasks]);
-        setShowTask(false);
-      }
-    }
-  };
+  const [status] = React.useState(task.status);
 
   const saveStatus = async (tasksArr: TaskModel[]) => {
     const jsonValue = JSON.stringify(tasksArr);
@@ -51,12 +37,6 @@ export default function TaskInfo({
   React.useEffect(() => {
     saveStatus(tasks);
   }, [tasks]);
-
-  //   const updateTask = () => {
-  //     task.title = title;
-  //     task.description = description;
-  //     task.priority = priority;
-  //   }
 
   const getPriority = () => {
     switch (task.priority) {
@@ -96,7 +76,7 @@ export default function TaskInfo({
           </View>
           <View style={styles.taskInfoContainer}>
             <View style={styles.top}>
-              <Text style={{ marginBottom: 4 }}>
+              <Text style={styles.createdOn}>
                 Created on: {formatDate() || 'Date'}
               </Text>
               <Text style={[status === 0 ? styles.pending : styles.done]}>
@@ -110,21 +90,13 @@ export default function TaskInfo({
           </View>
         </View>
       </View>
-      <View style={styles.footer}>
-        <TouchableHighlight onPress={() => updateStatus()}>
-          <Text>Done</Text>
-        </TouchableHighlight>
-        <TouchableHighlight
-          onPress={() => {
-            setShowTask(false);
-            navigation.navigate('Details', { task });
-          }}>
-          <Text>Edit Task</Text>
-        </TouchableHighlight>
-        <TouchableHighlight>
-          <Text>Delete</Text>
-        </TouchableHighlight>
-      </View>
+      <TaskInfoFooter
+        navigation={navigation}
+        task={task}
+        setShowTask={setShowTask}
+        tasks={tasks}
+        setTasks={setTasks}
+      />
     </Modal>
   );
 }
@@ -177,14 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'justify',
   },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    marginBottom: 40,
-  },
   done: {
     color: 'green',
   },
@@ -195,5 +159,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 7,
+  },
+  createdOn: {
+    marginBottom: 4,
   },
 });
