@@ -32,12 +32,16 @@ export default function TaskInfo({
   const [status, setStatus] = React.useState(task.status);
 
   const saveStatus = async (tasksArr: TaskModel[]) => {
-    const jsonValue = JSON.stringify(tasksArr);
-    await AsyncStorage.setItem('@storage_Key', jsonValue);
+    const index = tasksArr.findIndex(t => t.id === task.id);
+    if (index > -1) {
+      const jsonValue = JSON.stringify(tasksArr);
+      await AsyncStorage.setItem('@storage_Key', jsonValue);
+    }
   };
 
   React.useEffect(() => {
     saveStatus(tasks);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tasks]);
 
   const getPriority = () => {

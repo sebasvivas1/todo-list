@@ -60,9 +60,10 @@ export default function UpdateTask({
         createdAt: task.createdAt,
       };
       const index = tasks.findIndex(t => t.id === id);
-      tasks[index] = newTask;
-      setTasks([...tasks]);
-      await AsyncStorage.setItem('@storage_Key', JSON.stringify(tasks)).then(
+      const copy = [...tasks];
+      copy[index] = newTask;
+      setTasks([...copy]);
+      await AsyncStorage.setItem('@storage_Key', JSON.stringify(copy)).then(
         () => navigation.navigate('Details', { newTask }),
       );
     } catch (err) {
@@ -77,7 +78,6 @@ export default function UpdateTask({
           <Text style={styles.text}>Title: </Text>
           <TextInput
             style={styles.input}
-            //   style={global.input}
             placeholder="Title"
             onChangeText={text => setTitle(text)}
             value={title}

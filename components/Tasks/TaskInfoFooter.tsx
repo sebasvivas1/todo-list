@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import global from '../../styles/global';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface TaskInfoFooterProps {
   setShowTask: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,14 +26,25 @@ export default function TaskInfoFooter({
   status,
   setStatus,
 }: TaskInfoFooterProps) {
+  const deleteTask = async () => {
+    const index = tasks.findIndex(t => t.id === task.id);
+    if (index > -1) {
+      const copy = [...tasks];
+      copy.splice(index, 1);
+      setTasks([...copy]);
+      const jsonValue = JSON.stringify(copy);
+      await AsyncStorage.setItem('@storage_Key', jsonValue);
+    }
+  };
   const updateStatus = () => {
     if (status === 0) {
-      task.status = 1;
-      setStatus(1);
+      const newStatus = 1;
+      setStatus(newStatus);
       const index = tasks.findIndex(t => t.id === task.id);
       if (index > -1) {
-        tasks[index] = task;
-        setTasks([...tasks]);
+        const copy = [...tasks];
+        copy[index].status = newStatus;
+        setTasks([...copy]);
         setShowTask(false);
       }
     }
@@ -53,7 +65,7 @@ export default function TaskInfoFooter({
           color={global.blue.color}
         />
       </TouchableHighlight>
-      <TouchableHighlight>
+      <TouchableHighlight onPress={() => deleteTask()}>
         <MaterialIcons name="delete-outline" size={30} color="black" />
       </TouchableHighlight>
     </View>

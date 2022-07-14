@@ -19,6 +19,8 @@ interface TaskProps {
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
   navigation?: any;
   completed?: boolean;
+  setAllTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  allTasks: Array<TaskModel>;
   // setLongPress: React.Dispatch<React.SetStateAction<boolean>>;
   // selected?: Array<TaskModel>;
   // selectAll?: boolean;
@@ -29,10 +31,12 @@ interface TaskProps {
 
 export default function Task({
   task,
-  tasks,
-  setTasks,
+  // tasks,
+  // setTasks,
   navigation,
   completed = false,
+  setAllTasks,
+  allTasks,
 }: // setLongPress,
 // selected,
 TaskProps) {
@@ -42,11 +46,12 @@ TaskProps) {
 
   const toggleFavorite = async () => {
     setFavorite(!favorite);
-    const index = tasks.findIndex(t => t.id === task.id);
+    const index = allTasks.findIndex(t => t.id === task.id);
     if (index > -1) {
-      tasks[index].favorite = !favorite;
-      setTasks([...tasks]);
-      const jsonValue = JSON.stringify(tasks);
+      const copy = [...allTasks];
+      copy[index].favorite = !copy[index].favorite;
+      setAllTasks([...copy]);
+      const jsonValue = JSON.stringify(allTasks);
       await AsyncStorage.setItem('@storage_Key', jsonValue);
     }
   };
@@ -61,10 +66,11 @@ TaskProps) {
       {
         text: 'OK',
         onPress: () => {
-          const index = tasks.findIndex(t => t.id === task.id);
+          const index = allTasks.findIndex(t => t.id === task.id);
           if (index > -1) {
-            tasks.splice(index, 1);
-            setTasks([...tasks]);
+            const copy = [...allTasks];
+            allTasks.splice(index, 1);
+            setAllTasks([...copy]);
           }
         },
       },
@@ -110,8 +116,8 @@ TaskProps) {
         <TaskInfo
           task={task}
           showTask={showTask}
-          tasks={tasks}
-          setTasks={setTasks}
+          tasks={allTasks}
+          setTasks={setAllTasks}
           setShowTask={setShowTask}
           navigation={navigation}
           completed={completed}

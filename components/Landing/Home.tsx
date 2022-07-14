@@ -18,6 +18,8 @@ interface HomeProps {
   tasks: Array<TaskModel>;
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
   completedTasks: Array<TaskModel>;
+  allTasks: Array<TaskModel>;
+  setAllTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
 }
 
 export default function Home({
@@ -25,6 +27,8 @@ export default function Home({
   tasks,
   setTasks,
   completedTasks,
+  allTasks,
+  setAllTasks,
 }: HomeProps) {
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
   const [selectFavorites, setSelectFavorites] = React.useState<boolean>(false);
@@ -44,6 +48,7 @@ export default function Home({
       // setShowModal(false);
     }
   };
+
   React.useEffect(() => {
     if (longPress) {
       handleLongPress();
@@ -90,6 +95,8 @@ export default function Home({
                     tasks={tasks}
                     setTasks={setTasks}
                     navigation={navigation}
+                    setAllTasks={setAllTasks}
+                    allTasks={allTasks}
                     // setLongPress={setLongPress}
                     // selected={selected}
                     // selectAll={selectAll}
@@ -117,6 +124,8 @@ export default function Home({
                     tasks={tasks}
                     setTasks={setTasks}
                     navigation={navigation}
+                    setAllTasks={setAllTasks}
+                    allTasks={allTasks}
                     completed={true}
                   />
                 </View>
