@@ -17,7 +17,10 @@ export default function NewTaskScreen({ navigation }: any) {
   };
 
   React.useEffect(() => {
-    getData();
+    navigation.addListener('focus', () => {
+      getData();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

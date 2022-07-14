@@ -1,19 +1,18 @@
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import React from 'react';
 import TaskModel from '../../models/Task';
 import Task from '../Tasks/Task';
 import Footer from '../common/Footer';
-import NewTask from '../Tasks/NewTask';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import global from '../../styles/global';
 import NoTasks from '../common/NoTasks';
 interface HomeProps {
   navigation: any;
+  tasks: Array<TaskModel>;
+  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
 }
 
-export default function Home({ navigation }: HomeProps) {
-  const [tasks, setTasks] = React.useState<Array<TaskModel>>([]);
-
+export default function Home({ navigation, tasks, setTasks }: HomeProps) {
   const toggleFavorite = (task: TaskModel) => {
     if (tasks !== undefined) {
       const index = tasks.findIndex(t => t.id === task.id);
@@ -40,21 +39,6 @@ export default function Home({ navigation }: HomeProps) {
       await AsyncStorage.setItem('@storage_Key', JSON.stringify(tasks));
     }
   };
-  const getData = async () => {
-    try {
-      const storedTasks = await AsyncStorage.getItem('@storage_Key');
-      if (storedTasks !== null) {
-        setTasks(JSON.parse(storedTasks));
-        console.log(storedTasks);
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  React.useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <View style={global.container}>

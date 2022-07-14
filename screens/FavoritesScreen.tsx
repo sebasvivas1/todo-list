@@ -24,7 +24,10 @@ export default function FavoritesScreen({ navigation }: any) {
   };
 
   React.useEffect(() => {
-    getFavorites();
+    navigation.addListener('focus', () => {
+      getFavorites();
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   return (
     <Favorites

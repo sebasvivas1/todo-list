@@ -25,7 +25,8 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
   const [taskName, setTaskName] = React.useState('');
   const [taskDescription, setTaskDescription] = React.useState('');
   const [taskPriority, setTaskPriority] = React.useState<number>(0);
-  const addTask = () => {
+  const [done, setDone] = React.useState<boolean>(false);
+  const addTask = async () => {
     if (taskName.length > 0 && taskDescription.length > 0) {
       try {
         const task: TaskModel = {
@@ -38,9 +39,7 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
           createdAt: new Date(),
         };
         setTasks([...tasks, task]);
-        console.log('setTask: ', task);
-        setTaskName('');
-        setTaskDescription('');
+        setDone(true);
       } catch (err) {
         console.log(err);
       }
@@ -50,21 +49,22 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
   };
 
   const saveData = async (tasksArr: TaskModel[]) => {
-    console.log('Called saveData');
     try {
       const jsonValue = JSON.stringify(tasksArr);
-      const res = await AsyncStorage.setItem('@storage_Key', jsonValue);
-      console.log('Saved:', jsonValue);
-      console.log('response: ', res);
-      // navigation.navigate('Home');
+      await AsyncStorage.setItem('@storage_Key', jsonValue).then(() =>
+        navigation.navigate('Home'),
+      );
     } catch (err) {
       console.log(err);
     }
   };
 
   React.useEffect(() => {
-    saveData(tasks);
-  }, [tasks]);
+    if (done) {
+      saveData(tasks);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [done, tasks]);
   return (
     <View style={global.container}>
       <ScrollView>
