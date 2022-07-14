@@ -17,9 +17,15 @@ interface HomeProps {
   navigation: any;
   tasks: Array<TaskModel>;
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  completedTasks: Array<TaskModel>;
 }
 
-export default function Home({ navigation, tasks, setTasks }: HomeProps) {
+export default function Home({
+  navigation,
+  tasks,
+  setTasks,
+  completedTasks,
+}: HomeProps) {
   const [selectAll, setSelectAll] = React.useState<boolean>(false);
   const [selectFavorites, setSelectFavorites] = React.useState<boolean>(false);
   const [showModal, setShowModal] = React.useState<boolean>(false);
@@ -84,12 +90,12 @@ export default function Home({ navigation, tasks, setTasks }: HomeProps) {
                     tasks={tasks}
                     setTasks={setTasks}
                     navigation={navigation}
-                    setLongPress={setLongPress}
-                    selected={selected}
-                    selectAll={selectAll}
-                    selectFavorites={selectFavorites}
-                    setSelectAll={setSelectAll}
-                    setSelectFavorites={setSelectFavorites}
+                    // setLongPress={setLongPress}
+                    // selected={selected}
+                    // selectAll={selectAll}
+                    // selectFavorites={selectFavorites}
+                    // setSelectAll={setSelectAll}
+                    // setSelectFavorites={setSelectFavorites}
                   />
                 </View>
               ))}
@@ -98,7 +104,28 @@ export default function Home({ navigation, tasks, setTasks }: HomeProps) {
             <NoTasks />
           )}
         </View>
+        <View style={global.header}>
+          <Text style={global.title}>Completed Tasks</Text>
+        </View>
+        <View>
+          {completedTasks.length > 0 && completedTasks !== undefined ? (
+            <View>
+              {completedTasks.map((task: TaskModel) => (
+                <View key={task.id}>
+                  <Task
+                    task={task}
+                    tasks={tasks}
+                    setTasks={setTasks}
+                    navigation={navigation}
+                    completed={true}
+                  />
+                </View>
+              ))}
+            </View>
+          ) : null}
+        </View>
       </ScrollView>
+
       <LongPressModal
         setSelectAll={setSelectAll}
         setSelectFavorites={setSelectFavorites}

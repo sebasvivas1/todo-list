@@ -19,6 +19,7 @@ export default function Favorites({
   setFavorites,
   navigation,
 }: FavoritesProps) {
+  // const [, setLongPress] = React.useState(false);
   return (
     <View style={global.container}>
       <Text style={global.title}>Favorite Tasks</Text>
@@ -33,6 +34,7 @@ export default function Favorites({
                     tasks={favorites}
                     setTasks={setFavorites}
                     navigation={navigation}
+                    // setLongPress={setLongPress}
                   />
                 </View>
               ))}

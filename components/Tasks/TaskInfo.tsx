@@ -17,6 +17,7 @@ interface TaskInfoProps {
   navigation: any;
   tasks: Array<TaskModel>;
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  completed: boolean;
 }
 
 export default function TaskInfo({
@@ -26,8 +27,9 @@ export default function TaskInfo({
   navigation,
   tasks,
   setTasks,
+  completed = false,
 }: TaskInfoProps) {
-  const [status] = React.useState(task.status);
+  const [status, setStatus] = React.useState(task.status);
 
   const saveStatus = async (tasksArr: TaskModel[]) => {
     const jsonValue = JSON.stringify(tasksArr);
@@ -90,13 +92,17 @@ export default function TaskInfo({
           </View>
         </View>
       </View>
-      <TaskInfoFooter
-        navigation={navigation}
-        task={task}
-        setShowTask={setShowTask}
-        tasks={tasks}
-        setTasks={setTasks}
-      />
+      {!completed ? (
+        <TaskInfoFooter
+          navigation={navigation}
+          task={task}
+          setShowTask={setShowTask}
+          tasks={tasks}
+          setTasks={setTasks}
+          status={status}
+          setStatus={setStatus}
+        />
+      ) : null}
     </Modal>
   );
 }

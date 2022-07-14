@@ -12,6 +12,8 @@ interface TaskInfoFooterProps {
   task: TaskModel;
   tasks: Array<TaskModel>;
   setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  status: number;
+  setStatus: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function TaskInfoFooter({
@@ -20,8 +22,9 @@ export default function TaskInfoFooter({
   task,
   tasks,
   setTasks,
+  status,
+  setStatus,
 }: TaskInfoFooterProps) {
-  const [status, setStatus] = React.useState<number>(task.status);
   const updateStatus = () => {
     if (status === 0) {
       task.status = 1;

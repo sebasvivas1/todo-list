@@ -23,12 +23,23 @@ export default function FavoritesScreen({ navigation }: any) {
     }
   };
 
+  const updateFavorites = () => {
+    const favorites = allTasks.filter(task => task.favorite);
+    setFavoriteTasks(favorites);
+  };
+
+  React.useEffect(() => {
+    updateFavorites();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   React.useEffect(() => {
     navigation.addListener('focus', () => {
       getFavorites();
     });
+    // getFavorites();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [favoriteTasks]);
   return (
     <Favorites
       favorites={favoriteTasks}
