@@ -10,7 +10,6 @@ import {
 import TaskModel from '../../models/Task';
 import TaskInfo from './TaskInfo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import global from '../../styles/global';
 import { TasksContext } from '../../hooks/ContextProvider';
 import LongPressModal from '../Modal/LongPressModal';
@@ -130,6 +129,30 @@ export default function Task({
         <View>
           {!task?.completed ? (
             <View style={styles.itemsRight}>
+              {task.priority === 0 ? (
+                <MaterialIcons
+                  name="priority-high"
+                  size={23}
+                  color="green"
+                  style={styles.priority}
+                />
+              ) : null}
+              {task.priority === 1 ? (
+                <MaterialIcons
+                  name="priority-high"
+                  size={23}
+                  color="orange"
+                  style={styles.priority}
+                />
+              ) : null}
+              {task.priority === 2 ? (
+                <MaterialIcons
+                  name="priority-high"
+                  size={23}
+                  color="red"
+                  style={styles.priority}
+                />
+              ) : null}
               <TouchableHighlight
                 onPress={toggleFavorite}
                 underlayColor="#f2f2f2"
@@ -203,6 +226,9 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   favorite: {
-    marginRight: 15,
+    marginRight: 10,
+  },
+  priority: {
+    marginRight: 10,
   },
 });

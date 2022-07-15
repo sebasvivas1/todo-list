@@ -12,7 +12,6 @@ import Footer from '../common/Footer';
 import global from '../../styles/global';
 import NoTasks from '../common/NoTasks';
 import { TasksContext } from '../../hooks/ContextProvider';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Home() {
@@ -82,44 +81,45 @@ export default function Home() {
     <View style={global.container}>
       <View style={global.header}>
         <Text style={global.title}>Active Tasks</Text>
-        {!selectFavorites ? (
+        {!selectFavorites && !startSelection ? (
           <View style={styles.sortContainer}>
             <TouchableHighlight
               underlayColor={'#fff'}
               onPress={() => sortTasks()}>
-              <FontAwesome
-                name="sort"
+              <MaterialCommunityIcons
+                name="sort-numeric-variant"
                 size={25}
                 color="#000"
                 style={styles.icon}
               />
             </TouchableHighlight>
-            <Text style={styles.sortText}>{sortBy}</Text>
+            <Text style={styles.sortText}>date</Text>
           </View>
-        ) : null}
-        <View>
-          {(selectFavorites && selected.length > 0) ||
-          (startSelection && selected.length > 0) ? (
-            <View style={styles.icons}>
-              <TouchableHighlight onPress={deleteSelectedTasks}>
-                <MaterialCommunityIcons
-                  style={styles.icon}
-                  name="delete-outline"
-                  size={30}
-                  color="black"
-                />
-              </TouchableHighlight>
-              <TouchableHighlight onPress={markSelectedTasksAsDone}>
-                <MaterialCommunityIcons
-                  style={styles.icon}
-                  name="check"
-                  size={30}
-                  color="black"
-                />
-              </TouchableHighlight>
-            </View>
-          ) : null}
-        </View>
+        ) : (
+          <View>
+            {(selectFavorites && selected.length > 0) ||
+            (startSelection && selected.length > 0) ? (
+              <View style={styles.icons}>
+                <TouchableHighlight onPress={deleteSelectedTasks}>
+                  <MaterialCommunityIcons
+                    style={styles.icon}
+                    name="delete-outline"
+                    size={30}
+                    color="black"
+                  />
+                </TouchableHighlight>
+                <TouchableHighlight onPress={markSelectedTasksAsDone}>
+                  <MaterialCommunityIcons
+                    style={styles.icon}
+                    name="check"
+                    size={30}
+                    color="black"
+                  />
+                </TouchableHighlight>
+              </View>
+            ) : null}
+          </View>
+        )}
       </View>
       <ScrollView alwaysBounceVertical={false}>
         <View>
