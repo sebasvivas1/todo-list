@@ -5,81 +5,41 @@ import {
   StyleSheet,
   Pressable,
   TouchableHighlight,
-  Alert,
+  // Alert,
 } from 'react-native';
 import TaskModel from '../../models/Task';
 import TaskInfo from './TaskInfo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import global from '../../styles/global';
+import { TasksContext } from '../../hooks/ContextProvider';
 
 interface TaskProps {
   task: TaskModel;
-  tasks: Array<TaskModel>;
-  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-  navigation?: any;
-  completed?: boolean;
-  setAllTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-  allTasks: Array<TaskModel>;
-  // setLongPress: React.Dispatch<React.SetStateAction<boolean>>;
-  // selected?: Array<TaskModel>;
-  // selectAll?: boolean;
-  // selectFavorites?: boolean;
-  // setSelectAll?: React.Dispatch<React.SetStateAction<boolean>>;
-  // setSelectFavorites?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function Task({
-  task,
-  // tasks,
-  setTasks,
-  navigation,
-  completed = false,
-  setAllTasks,
-  allTasks,
-}: // setLongPress,
-// selected,
-TaskProps) {
+export default function Task({ task }: TaskProps) {
+  const { tasks, setTasks } = React.useContext(TasksContext);
   const [favorite, setFavorite] = React.useState(task?.favorite);
   const [showTask, setShowTask] = React.useState(false);
   const [isSelected /*setIsSelected*/] = React.useState(false);
 
-  const toggleFavorite = async () => {
+  const toggleModal = () => {
+    setShowTask(!showTask);
+  };
+
+  const toggleFavorite = () => {
     setFavorite(!favorite);
-    const index = allTasks.findIndex(t => t.id === task.id);
-    if (index > -1) {
-      const copy = [...allTasks];
-      copy[index].favorite = !copy[index].favorite;
-      setAllTasks([...copy]);
-      setTasks([...copy]);
-      const jsonValue = JSON.stringify(allTasks);
-      await AsyncStorage.setItem('@storage_Key', jsonValue);
-    }
+    const index = tasks.findIndex((t: TaskModel) => t.id === task.id);
+    tasks[index].favorite = !tasks[index].favorite;
+    setTasks([...tasks]);
   };
 
   const deleteTask = () => {
-    Alert.alert('Delete', 'Do you want to delete this task?', [
-      {
-        text: 'Cancel',
-        onPress: () => {},
-        style: 'cancel',
-      },
-      {
-        text: 'OK',
-        onPress: () => {
-          const index = allTasks.findIndex(t => t.id === task.id);
-          if (index > -1) {
-            const copy = [...allTasks];
-            allTasks.splice(index, 1);
-            setAllTasks([...copy]);
-          }
-        },
-      },
-    ]);
-  };
-
-  const toggleModal = () => {
-    setShowTask(!showTask);
+    const index = tasks.findIndex((t: TaskModel) => t.id === task.id);
+    const oldTasks = [...tasks];
+    oldTasks.splice(index, 1);
+    setTasks(oldTasks);
   };
   return (
     <Pressable
@@ -94,7 +54,7 @@ TaskProps) {
           {task?.title || 'Task Name'}
         </Text>
         <View>
-          {!completed ? (
+          {!task?.completed ? (
             <View style={styles.itemsRight}>
               <TouchableHighlight
                 onPress={toggleFavorite}
@@ -114,15 +74,7 @@ TaskProps) {
         </View>
       </View>
       <View style={styles.info}>
-        <TaskInfo
-          task={task}
-          showTask={showTask}
-          tasks={allTasks}
-          setTasks={setAllTasks}
-          setShowTask={setShowTask}
-          navigation={navigation}
-          completed={completed}
-        />
+        <TaskInfo task={task} showTask={showTask} setShowTask={setShowTask} />
       </View>
     </Pressable>
   );

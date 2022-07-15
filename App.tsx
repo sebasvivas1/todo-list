@@ -8,18 +8,21 @@ import {
   TaskDetailsScreen,
   UpdateTaskScreen,
 } from './screens';
+import TasksContextProvider from './hooks/ContextProvider';
 
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Favorites" component={FavoritesScreen} />
-        <Stack.Screen name="Details" component={TaskDetailsScreen} />
-        <Stack.Screen name="Update Task" component={UpdateTaskScreen} />
-        <Stack.Screen name="New Task" component={NewTaskScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <TasksContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Favorites" component={FavoritesScreen} />
+          <Stack.Screen name="Details" component={TaskDetailsScreen} />
+          <Stack.Screen name="Update Task" component={UpdateTaskScreen} />
+          <Stack.Screen name="New Task" component={NewTaskScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </TasksContextProvider>
   );
 }

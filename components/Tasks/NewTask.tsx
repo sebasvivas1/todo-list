@@ -10,24 +10,21 @@ import React from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 import TaskModel from '../../models/Task';
 import { faker } from '@faker-js/faker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import global from '../../styles/global';
 import Footer from '../common/Footer';
 import { TouchableHighlight } from 'react-native';
+import { TasksContext } from '../../hooks/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
 
-interface NewTaskProps {
-  tasks: Array<TaskModel>;
-  setTasks: any;
-  navigation: any;
-}
-
-export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
+export default function NewTask() {
+  const { tasks, setTasks } = React.useContext(TasksContext);
+  const navigation = useNavigation();
   const [taskName, setTaskName] = React.useState('');
   const [taskDescription, setTaskDescription] = React.useState('');
   const [taskPriority, setTaskPriority] = React.useState<number>();
-  const [done, setDone] = React.useState<boolean>(false);
   const [underlay, setUnderlay] = React.useState<boolean>(false);
-  const addTask = async () => {
+  const addTask = () => {
     if (
       (taskName.length > 0 &&
         taskDescription.length > 0 &&
@@ -41,12 +38,12 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
           title: taskName,
           description: taskDescription,
           priority: taskPriority,
-          status: 0,
           favorite: false,
           createdAt: new Date(),
+          completed: false,
         };
         setTasks([...tasks, task]);
-        setDone(true);
+        navigation.navigate('Home');
       } catch (err) {
         console.log(err);
       }
@@ -54,24 +51,6 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
       Alert.alert('Error', 'Please fill out all fields');
     }
   };
-
-  const saveData = async (tasksArr: TaskModel[]) => {
-    try {
-      const jsonValue = JSON.stringify(tasksArr);
-      await AsyncStorage.setItem('@storage_Key', jsonValue).then(() =>
-        navigation.navigate('Home'),
-      );
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  React.useEffect(() => {
-    if (done) {
-      saveData(tasks);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done, tasks]);
   return (
     <View style={global.container}>
       <ScrollView>
@@ -111,7 +90,7 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
           </Text>
         </TouchableHighlight>
       </ScrollView>
-      <Footer navigation={navigation} />
+      <Footer />
     </View>
   );
 }

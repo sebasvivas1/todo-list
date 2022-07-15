@@ -2,12 +2,10 @@ import { View, StyleSheet, TouchableHighlight } from 'react-native';
 import React from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
 
-interface FooterProps {
-  navigation: any;
-}
-
-export default function Footer({ navigation }: FooterProps) {
+export default function Footer() {
+  const navigation = useNavigation();
   return (
     <View style={styles.footer}>
       <TouchableHighlight

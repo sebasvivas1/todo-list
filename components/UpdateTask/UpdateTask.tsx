@@ -12,20 +12,16 @@ import global from '../../styles/global';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNPickerSelect from 'react-native-picker-select';
 import Footer from '../common/Footer';
+import { useNavigation } from '@react-navigation/native';
+import { TasksContext } from '../../hooks/ContextProvider';
 
 interface UpdateTaskProps {
-  navigation: any;
   route: any;
-  tasks: Array<TaskModel>;
-  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
 }
 
-export default function UpdateTask({
-  route,
-  navigation,
-  tasks,
-  setTasks,
-}: UpdateTaskProps) {
+export default function UpdateTask({ route }: UpdateTaskProps) {
+  const { tasks, setTasks } = React.useContext(TasksContext);
+  const navigation = useNavigation();
   const [task] = React.useState<TaskModel>(route.params.task);
   const [title, setTitle] = React.useState<string>(task?.title);
   const [description, setDescription] = React.useState<string>(
@@ -55,7 +51,7 @@ export default function UpdateTask({
         title,
         description,
         priority: newPriority,
-        status: task.status,
+        completed: false,
         favorite: task.favorite,
         createdAt: task.createdAt,
       };
@@ -113,7 +109,7 @@ export default function UpdateTask({
           <Text style={styles.buttonText}>Update Task</Text>
         </TouchableHighlight>
       </ScrollView>
-      <Footer navigation={navigation} />
+      <Footer />
     </View>
   );
 }

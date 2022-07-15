@@ -3,13 +3,14 @@ import React from 'react';
 import TaskModel from '../../models/Task';
 import global from '../../styles/global';
 import Footer from '../common/Footer';
+import { useNavigation } from '@react-navigation/native';
 
 interface DetilsProps {
   task: TaskModel;
-  navigation: any;
 }
 
-export default function Details({ task, navigation }: DetilsProps) {
+export default function Details({ task }: DetilsProps) {
+  const navigation = useNavigation();
   const getPriority = () => {
     switch (task.priority) {
       case 0:
@@ -35,7 +36,7 @@ export default function Details({ task, navigation }: DetilsProps) {
         <Text style={styles.text}>Priority: {getPriority()}</Text>
         <Text style={styles.text}>Created at: {formatDate()}</Text>
       </ScrollView>
-      <Footer navigation={navigation} />
+      <Footer />
     </View>
   );
 }

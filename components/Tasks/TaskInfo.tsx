@@ -7,43 +7,20 @@ import {
 } from 'react-native';
 import React from 'react';
 import TaskModel from '../../models/Task';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 import TaskInfoFooter from './TaskInfoFooter';
 
 interface TaskInfoProps {
   task: TaskModel;
   showTask: boolean;
   setShowTask: React.Dispatch<React.SetStateAction<boolean>>;
-  navigation: any;
-  tasks: Array<TaskModel>;
-  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-  completed: boolean;
 }
 
 export default function TaskInfo({
   task,
   showTask,
   setShowTask,
-  navigation,
-  tasks,
-  setTasks,
-  completed = false,
 }: TaskInfoProps) {
-  const [status, setStatus] = React.useState(task.status);
-
-  const saveStatus = async (tasksArr: TaskModel[]) => {
-    const index = tasksArr.findIndex(t => t.id === task.id);
-    if (index > -1) {
-      const jsonValue = JSON.stringify(tasksArr);
-      await AsyncStorage.setItem('@storage_Key', jsonValue);
-    }
-  };
-
-  React.useEffect(() => {
-    saveStatus(tasks);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasks]);
-
   const getPriority = () => {
     switch (task.priority) {
       case 0:
@@ -85,8 +62,8 @@ export default function TaskInfo({
               <Text style={styles.createdOn}>
                 Created on: {formatDate() || 'Date'}
               </Text>
-              <Text style={[status === 0 ? styles.pending : styles.done]}>
-                {status === 0 ? 'Pending' : 'Done'}
+              <Text style={[!task?.completed ? styles.pending : styles.done]}>
+                {!task?.completed ? 'Pending' : 'Done'}
               </Text>
             </View>
             <View>
@@ -96,16 +73,8 @@ export default function TaskInfo({
           </View>
         </View>
       </View>
-      {!completed ? (
-        <TaskInfoFooter
-          navigation={navigation}
-          task={task}
-          setShowTask={setShowTask}
-          tasks={tasks}
-          setTasks={setTasks}
-          status={status}
-          setStatus={setStatus}
-        />
+      {!task?.completed ? (
+        <TaskInfoFooter task={task} setShowTask={setShowTask} />
       ) : null}
     </Modal>
   );

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import {
   View,
   Text,
@@ -12,82 +11,25 @@ import Task from '../Tasks/Task';
 import Footer from '../common/Footer';
 import global from '../../styles/global';
 import NoTasks from '../common/NoTasks';
-import LongPressModal from '../Modal/LongPressModal';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-interface HomeProps {
-  navigation: any;
-  tasks: Array<TaskModel>;
-  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-  completedTasks: Array<TaskModel>;
-  allTasks: Array<TaskModel>;
-  setAllTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-}
+import { TasksContext } from '../../hooks/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Home({
-  navigation,
-  tasks,
-  setTasks,
-  completedTasks,
-  allTasks,
-  setAllTasks,
-}: HomeProps) {
-  const [selectAll, setSelectAll] = React.useState<boolean>(false);
-  const [selectFavorites, setSelectFavorites] = React.useState<boolean>(false);
-  const [showModal, setShowModal] = React.useState<boolean>(false);
-  const [longPress, setLongPress] = React.useState<boolean>(false);
-  const [selected, setSelected] = React.useState<Array<TaskModel>>([]);
-  // const [sortBy, setSortBy] = React.useState<string>('dateasc');
-  const handleLongPress = () => {
-    setShowModal(true);
-    if (selectAll) {
-      setSelectFavorites(false);
-      setSelected(tasks);
-      // setShowModal(false);
-    }
-    if (selectFavorites) {
-      setSelectAll(false);
-      setSelected(tasks.filter(task => task.favorite));
-      // setShowModal(false);
-    }
+export default function Home() {
+  const { tasks, setTasks } = React.useContext(TasksContext);
+  const navigation = useNavigation();
+  const getCompletedTasks = (): TaskModel[] => {
+    return tasks.filter((task: TaskModel) => task.completed === true);
   };
 
-  // const sortTasks = () => {
-  //   if (sortBy === 'datedesc') {
-  //     const sortedTasks = [...tasks]
-  //       .sort((a, b) => {
-  //         return (
-  //           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  //         );
-  //       })
-  //       .reverse();
-  //     setTasks(sortedTasks);
-  //   }
-  //   if (sortBy === 'dateasc') {
-  //     const sortedTasks = [...tasks].sort((a, b) => {
-  //       return (
-  //         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  //       );
-  //     });
-  //     setTasks(sortedTasks);
-  //   }
-  // };
+  const getActiveTasks = (): TaskModel[] => {
+    return tasks.filter((task: TaskModel) => task.completed === false);
+  };
 
-  // React.useEffect(() => {
-  //   sortTasks();
-  // }, [sortBy]);
-
-  React.useEffect(() => {
-    if (longPress) {
-      handleLongPress();
-      // setShowModal(false);
-    }
-    setLongPress(false);
-  }, [longPress]);
   return (
     <View style={global.container}>
       <View style={global.header}>
         <Text style={global.title}>Active Tasks</Text>
-        <View>
+        {/* <View>
           {selected && selected.length > 0 ? (
             <View style={styles.icons}>
               <TouchableHighlight>
@@ -108,28 +50,15 @@ export default function Home({
               </TouchableHighlight>
             </View>
           ) : null}
-        </View>
+        </View> */}
       </View>
       <ScrollView>
         <View>
-          {tasks.length > 0 && tasks !== undefined ? (
+          {getActiveTasks().length > 0 && getActiveTasks() !== undefined ? (
             <View>
-              {tasks.map((task: TaskModel) => (
+              {getActiveTasks().map((task: TaskModel) => (
                 <View key={task?.id}>
-                  <Task
-                    task={task}
-                    tasks={tasks}
-                    setTasks={setTasks}
-                    navigation={navigation}
-                    setAllTasks={setAllTasks}
-                    allTasks={allTasks}
-                    // setLongPress={setLongPress}
-                    // selected={selected}
-                    // selectAll={selectAll}
-                    // selectFavorites={selectFavorites}
-                    // setSelectAll={setSelectAll}
-                    // setSelectFavorites={setSelectFavorites}
-                  />
+                  <Task task={task} />
                 </View>
               ))}
             </View>
@@ -141,33 +70,16 @@ export default function Home({
           <Text style={global.title}>Completed Tasks</Text>
         </View>
         <View>
-          {completedTasks.length > 0 && completedTasks !== undefined ? (
-            <View>
-              {completedTasks.map((task: TaskModel) => (
-                <View key={task.id}>
-                  <Task
-                    task={task}
-                    tasks={tasks}
-                    setTasks={setTasks}
-                    navigation={navigation}
-                    setAllTasks={setAllTasks}
-                    allTasks={allTasks}
-                    completed={true}
-                  />
-                </View>
-              ))}
-            </View>
-          ) : null}
+          <View>
+            {getCompletedTasks().map((task: TaskModel) => (
+              <View key={task.id}>
+                <Task task={task} />
+              </View>
+            ))}
+          </View>
         </View>
       </ScrollView>
-
-      <LongPressModal
-        setSelectAll={setSelectAll}
-        setSelectFavorites={setSelectFavorites}
-        setShowModal={setShowModal}
-        showModal={showModal}
-      />
-      <Footer navigation={navigation} />
+      <Footer />
     </View>
   );
 }

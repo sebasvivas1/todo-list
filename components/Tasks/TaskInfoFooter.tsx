@@ -5,51 +5,35 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import global from '../../styles/global';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TasksContext } from '../../hooks/ContextProvider';
+import { useNavigation } from '@react-navigation/native';
 
 interface TaskInfoFooterProps {
   setShowTask: React.Dispatch<React.SetStateAction<boolean>>;
-  navigation: any;
   task: TaskModel;
-  tasks: Array<TaskModel>;
-  setTasks: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
-  status: number;
-  setStatus: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function TaskInfoFooter({
   setShowTask,
-  navigation,
   task,
-  tasks,
-  setTasks,
-  status,
-  setStatus,
 }: TaskInfoFooterProps) {
-  const deleteTask = async () => {
-    const index = tasks.findIndex(t => t.id === task.id);
-    if (index > -1) {
-      const copy = [...tasks];
-      copy.splice(index, 1);
-      setTasks([...copy]);
-      const jsonValue = JSON.stringify(copy);
-      await AsyncStorage.setItem('@storage_Key', jsonValue);
-    }
+  const { tasks, setTasks } = React.useContext(TasksContext);
+  const navigation = useNavigation();
+
+  const completeTask = () => {
+    const index = tasks.findIndex((t: TaskModel) => t.id === task.id);
+    const oldTasks = [...tasks];
+    oldTasks[index].completed = true;
+    setTasks(oldTasks);
   };
-  const updateStatus = () => {
-    if (status === 0) {
-      const newStatus = 1;
-      setStatus(newStatus);
-      const index = tasks.findIndex(t => t.id === task.id);
-      if (index > -1) {
-        const copy = [...tasks];
-        copy[index].status = newStatus;
-        copy[index].favorite = false;
-        setTasks([...copy]);
-        setShowTask(false);
-      }
-    }
+
+  const deleteTask = () => {
+    const index = tasks.findIndex((t: TaskModel) => t.id === task.id);
+    const oldTasks = [...tasks];
+    oldTasks.splice(index, 1);
+    setTasks(oldTasks);
   };
+
   return (
     <View style={styles.footer}>
       <TouchableHighlight
@@ -59,15 +43,21 @@ export default function TaskInfoFooter({
         }}>
         <FontAwesome name="edit" size={30} color="black" />
       </TouchableHighlight>
-      <TouchableHighlight onPress={() => updateStatus()}>
+      <TouchableHighlight>
         <Ionicons
           name="ios-checkmark-circle"
           size={40}
           color={global.blue.color}
+          onPress={completeTask}
         />
       </TouchableHighlight>
-      <TouchableHighlight onPress={() => deleteTask()}>
-        <MaterialIcons name="delete-outline" size={30} color="black" />
+      <TouchableHighlight>
+        <MaterialIcons
+          name="delete-outline"
+          size={30}
+          color="black"
+          onPress={deleteTask}
+        />
       </TouchableHighlight>
     </View>
   );
