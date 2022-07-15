@@ -29,8 +29,7 @@ export default function HomeScreen({ navigation }: any) {
     navigation.addListener('focus', () => {
       getData();
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigation]);
   return (
     <Home
       navigation={navigation}

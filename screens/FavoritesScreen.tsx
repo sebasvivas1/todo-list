@@ -15,31 +15,18 @@ export default function FavoritesScreen({ navigation }: any) {
         const tasks: TaskModel[] = JSON.parse(storedTasks);
         const favorites = tasks.filter(task => task.favorite);
         setFavoriteTasks(favorites);
-        const alltasks = tasks;
-        setAllTasks(alltasks);
+        setAllTasks(tasks);
       }
     } catch (err) {
       console.log(err);
     }
   };
 
-  const updateFavorites = () => {
-    const favorites = allTasks.filter(task => task.favorite);
-    setFavoriteTasks(favorites);
-  };
-
-  React.useEffect(() => {
-    updateFavorites();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   React.useEffect(() => {
     navigation.addListener('focus', () => {
       getFavorites();
     });
-    // getFavorites();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [favoriteTasks]);
+  }, [navigation]);
   return (
     <Favorites
       favorites={favoriteTasks}

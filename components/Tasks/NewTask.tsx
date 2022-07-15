@@ -28,7 +28,13 @@ export default function NewTask({ tasks, setTasks, navigation }: NewTaskProps) {
   const [done, setDone] = React.useState<boolean>(false);
   const [underlay, setUnderlay] = React.useState<boolean>(false);
   const addTask = async () => {
-    if (taskName.length > 0 && taskDescription.length > 0 && taskPriority) {
+    if (
+      (taskName.length > 0 &&
+        taskDescription.length > 0 &&
+        taskPriority === 0) ||
+      taskPriority === 1 ||
+      taskPriority === 2
+    ) {
       try {
         const task: TaskModel = {
           id: faker.database.mongodbObjectId(),

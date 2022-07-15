@@ -44,6 +44,7 @@ export default function TaskInfoFooter({
       if (index > -1) {
         const copy = [...tasks];
         copy[index].status = newStatus;
+        copy[index].favorite = false;
         setTasks([...copy]);
         setShowTask(false);
       }

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   View,
   Text,
@@ -35,6 +36,7 @@ export default function Home({
   const [showModal, setShowModal] = React.useState<boolean>(false);
   const [longPress, setLongPress] = React.useState<boolean>(false);
   const [selected, setSelected] = React.useState<Array<TaskModel>>([]);
+  // const [sortBy, setSortBy] = React.useState<string>('dateasc');
   const handleLongPress = () => {
     setShowModal(true);
     if (selectAll) {
@@ -49,13 +51,37 @@ export default function Home({
     }
   };
 
+  // const sortTasks = () => {
+  //   if (sortBy === 'datedesc') {
+  //     const sortedTasks = [...tasks]
+  //       .sort((a, b) => {
+  //         return (
+  //           new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  //         );
+  //       })
+  //       .reverse();
+  //     setTasks(sortedTasks);
+  //   }
+  //   if (sortBy === 'dateasc') {
+  //     const sortedTasks = [...tasks].sort((a, b) => {
+  //       return (
+  //         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  //       );
+  //     });
+  //     setTasks(sortedTasks);
+  //   }
+  // };
+
+  // React.useEffect(() => {
+  //   sortTasks();
+  // }, [sortBy]);
+
   React.useEffect(() => {
     if (longPress) {
       handleLongPress();
       // setShowModal(false);
     }
     setLongPress(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [longPress]);
   return (
     <View style={global.container}>

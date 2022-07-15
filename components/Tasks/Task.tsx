@@ -32,7 +32,7 @@ interface TaskProps {
 export default function Task({
   task,
   // tasks,
-  // setTasks,
+  setTasks,
   navigation,
   completed = false,
   setAllTasks,
@@ -51,6 +51,7 @@ TaskProps) {
       const copy = [...allTasks];
       copy[index].favorite = !copy[index].favorite;
       setAllTasks([...copy]);
+      setTasks([...copy]);
       const jsonValue = JSON.stringify(allTasks);
       await AsyncStorage.setItem('@storage_Key', jsonValue);
     }
