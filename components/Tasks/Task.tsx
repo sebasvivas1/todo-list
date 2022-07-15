@@ -19,14 +19,18 @@ interface TaskProps {
   task: TaskModel;
   setSelectFavorites?: React.Dispatch<React.SetStateAction<boolean>>;
   selected?: Array<TaskModel>;
-  selectFavorites?: boolean;
+  setSelected?: React.Dispatch<React.SetStateAction<Array<TaskModel>>>;
+  startSelection?: boolean;
+  setStartSelection?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function Task({
   task,
   setSelectFavorites,
-  selectFavorites,
   selected,
+  setSelected,
+  startSelection,
+  setStartSelection,
 }: TaskProps) {
   const { tasks, setTasks } = React.useContext(TasksContext);
   const [favorite, setFavorite] = React.useState(task?.favorite);
@@ -57,23 +61,55 @@ export default function Task({
       const id = task.id;
       if (selected.map((t: TaskModel) => t.id).includes(id)) {
         setIsSelected(true);
-        console.log('should turn blue');
       } else {
         setIsSelected(false);
       }
     }
   };
 
+  const handleLongPress = () => {
+    if (task.favorite) {
+      setShowModal(true);
+    } else {
+      if (
+        setStartSelection !== undefined &&
+        selected !== undefined &&
+        setSelected
+      ) {
+        setStartSelection(true);
+        const oldTasks = [...selected];
+        setSelected([...oldTasks, task]);
+      }
+    }
+  };
+
+  const handleOnPress = () => {
+    if (startSelection) {
+      if (selected !== undefined && setSelected) {
+        const oldTasks = [...selected];
+        if (selected.includes(task)) {
+          const index = selected.findIndex((t: TaskModel) => t.id === task.id);
+          oldTasks.splice(index, 1);
+          setSelected(oldTasks);
+        } else {
+          setSelected([...oldTasks, task]);
+        }
+      }
+    } else {
+      toggleModal();
+    }
+  };
+
   React.useEffect(() => {
     checkIfSelected();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectFavorites]);
+  }, [selected]);
 
   return (
     <Pressable
-      onPress={toggleModal}
+      onPress={handleOnPress}
       style={isSelected ? styles.selectedContainer : styles.container}
-      onLongPress={() => setShowModal(true)}>
+      onLongPress={handleLongPress}>
       <View style={styles.items}>
         <Text
           numberOfLines={1}

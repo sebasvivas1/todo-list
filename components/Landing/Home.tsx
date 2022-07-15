@@ -20,6 +20,7 @@ export default function Home() {
   const [sortBy, setSortBy] = React.useState(false);
   const [selectFavorites, setSelectFavorites] = React.useState<boolean>(false);
   const [selected, setSelected] = React.useState<Array<TaskModel>>([]);
+  const [startSelection, setStartSelection] = React.useState<boolean>(false);
 
   const getCompletedTasks = (): TaskModel[] => {
     return tasks.filter((task: TaskModel) => task.completed === true);
@@ -96,7 +97,8 @@ export default function Home() {
           </View>
         ) : null}
         <View>
-          {selectFavorites && selected.length > 0 ? (
+          {(selectFavorites && selected.length > 0) ||
+          (startSelection && selected.length > 0) ? (
             <View style={styles.icons}>
               <TouchableHighlight onPress={deleteSelectedTasks}>
                 <MaterialCommunityIcons
@@ -127,8 +129,10 @@ export default function Home() {
                   <Task
                     task={task}
                     setSelectFavorites={setSelectFavorites}
-                    selectFavorites={selectFavorites}
                     selected={selected}
+                    setSelected={setSelected}
+                    startSelection={startSelection}
+                    setStartSelection={setStartSelection}
                   />
                 </View>
               ))}
