@@ -52,6 +52,7 @@ export default function Home() {
     const oldTasks = [...tasks];
     setTasks(oldTasks.filter((task: TaskModel) => !selected.includes(task)));
     setSelected([]);
+    setStartSelection(false);
     setSelectFavorites(false);
   };
 
@@ -66,13 +67,13 @@ export default function Home() {
       }),
     );
     setSelected([]);
+    setStartSelection(false);
     setSelectFavorites(false);
   };
 
   React.useEffect(() => {
     if (selectFavorites) {
       setSelected(tasks.filter((task: TaskModel) => task.favorite === true));
-      console.log(selected);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectFavorites]);
@@ -90,7 +91,7 @@ export default function Home() {
                 name="sort"
                 size={25}
                 color="#000"
-                style={styles.sortIcon}
+                style={styles.icon}
               />
             </TouchableHighlight>
             <Text style={styles.sortText}>{sortBy}</Text>
@@ -186,10 +187,6 @@ const styles = StyleSheet.create({
   },
   sortText: {
     marginRight: 20,
-  },
-  sortIcon: {
-    marginRight: 10,
-    alignSelf: 'center',
   },
   unselectContainer: {
     marginTop: 30,

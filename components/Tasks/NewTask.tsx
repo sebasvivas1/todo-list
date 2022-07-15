@@ -10,7 +10,6 @@ import React from 'react';
 import RNPickerSelect from 'react-native-picker-select';
 import TaskModel from '../../models/Task';
 import { faker } from '@faker-js/faker';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
 import global from '../../styles/global';
 import Footer from '../common/Footer';
 import { TouchableHighlight } from 'react-native';
@@ -42,7 +41,8 @@ export default function NewTask() {
           createdAt: new Date(),
           completed: false,
         };
-        setTasks([...tasks, task]);
+        const oldTasks = [...tasks];
+        setTasks([...oldTasks, task]);
         navigation.navigate('Home');
       } catch (err) {
         console.log(err);

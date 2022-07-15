@@ -85,14 +85,25 @@ export default function Task({
 
   const handleOnPress = () => {
     if (startSelection) {
-      if (selected !== undefined && setSelected) {
+      if (
+        selected !== undefined &&
+        setSelected &&
+        setStartSelection !== undefined
+      ) {
         const oldTasks = [...selected];
         if (selected.includes(task)) {
           const index = selected.findIndex((t: TaskModel) => t.id === task.id);
           oldTasks.splice(index, 1);
           setSelected(oldTasks);
+          if (selected.length === 1) {
+            setStartSelection(false);
+          }
         } else {
           setSelected([...oldTasks, task]);
+        }
+        if (selected.length === 0) {
+          setStartSelection(false);
+          toggleModal();
         }
       }
     } else {
