@@ -22,7 +22,8 @@ export default function TaskInfoFooter({
 
   const completeTask = () => {
     const index = tasks.findIndex((t: TaskModel) => t.id === task.id);
-    const oldTasks = [...tasks];
+    const oldTasks: TaskModel[] = [...tasks];
+    oldTasks[index].favorite = false;
     oldTasks[index].completed = true;
     setTasks(oldTasks);
   };

@@ -13,16 +13,26 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 import global from '../../styles/global';
 import { TasksContext } from '../../hooks/ContextProvider';
+import LongPressModal from '../Modal/LongPressModal';
 
 interface TaskProps {
   task: TaskModel;
+  setSelectFavorites?: React.Dispatch<React.SetStateAction<boolean>>;
+  selected?: Array<TaskModel>;
+  selectFavorites?: boolean;
 }
 
-export default function Task({ task }: TaskProps) {
+export default function Task({
+  task,
+  setSelectFavorites,
+  selectFavorites,
+  selected,
+}: TaskProps) {
   const { tasks, setTasks } = React.useContext(TasksContext);
   const [favorite, setFavorite] = React.useState(task?.favorite);
   const [showTask, setShowTask] = React.useState(false);
-  const [isSelected /*setIsSelected*/] = React.useState(false);
+  const [showModal, setShowModal] = React.useState<boolean>(false);
+  const [isSelected, setIsSelected] = React.useState<boolean>(false);
 
   const toggleModal = () => {
     setShowTask(!showTask);
@@ -41,12 +51,29 @@ export default function Task({ task }: TaskProps) {
     oldTasks.splice(index, 1);
     setTasks(oldTasks);
   };
+
+  const checkIfSelected = () => {
+    if (selected !== undefined) {
+      const id = task.id;
+      if (selected.map((t: TaskModel) => t.id).includes(id)) {
+        setIsSelected(true);
+        console.log('should turn blue');
+      } else {
+        setIsSelected(false);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    checkIfSelected();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectFavorites]);
+
   return (
     <Pressable
       onPress={toggleModal}
       style={isSelected ? styles.selectedContainer : styles.container}
-      // onLongPress={() => setLongPress(true)}
-    >
+      onLongPress={() => setShowModal(true)}>
       <View style={styles.items}>
         <Text
           numberOfLines={1}
@@ -76,6 +103,11 @@ export default function Task({ task }: TaskProps) {
       <View style={styles.info}>
         <TaskInfo task={task} showTask={showTask} setShowTask={setShowTask} />
       </View>
+      <LongPressModal
+        setSelectFavorites={setSelectFavorites}
+        setShowModal={setShowModal}
+        showModal={showModal}
+      />
     </Pressable>
   );
 }

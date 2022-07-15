@@ -7,14 +7,12 @@ import { TouchableHighlight } from 'react-native';
 interface LongPressModalProps {
   showModal: boolean;
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectAll: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectFavorites: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectFavorites?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function LongPressModal({
   showModal,
   setShowModal,
-  setSelectAll,
   setSelectFavorites,
 }: LongPressModalProps) {
   return (
@@ -32,12 +30,12 @@ export default function LongPressModal({
           </View>
           <View style={styles.optionsContainer}>
             <TouchableHighlight
-              onPress={() => setSelectAll(true)}
-              style={styles.options}>
-              <Text style={styles.optionsText}>Select All</Text>
-            </TouchableHighlight>
-            <TouchableHighlight
-              onPress={() => setSelectFavorites(true)}
+              onPress={() => {
+                if (setSelectFavorites !== undefined) {
+                  setSelectFavorites(true);
+                  setShowModal(false);
+                }
+              }}
               style={styles.options}>
               <Text style={styles.optionsText}>Select All Favorites</Text>
             </TouchableHighlight>
